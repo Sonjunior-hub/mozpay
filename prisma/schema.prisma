@@ -1,13 +1,118 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum TransactionType {
+  DEPOSIT
+  PURCHASE
+  REFUND
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
+enum SubscriptionStatus {
+  PENDING
+  ACTIVE
+  EXPIRED
+  CANCELLED
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  phone     String   @unique
+  password  String
+
+  role      Role @default(USER)
+
+  wallet        Wallet?
+  subscriptions Subscription[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Wallet {
+  id       String @id @default(uuid())
+
+  balance  Float @default(0)
+
+  currency String @default("MZN")
+
+  userId String @unique
+  user   User @relation(fields: [userId], references: [id])
+
+  transactions Transaction[]
+
+  createdAt DateTime @default(now())
+}
+
+model Product {
+  id          String @id @default(uuid())
+
+  name        String
+
+  provider    String
+
+  description String
+
+  price       Float
+
+  duration    Int
+
+  active      Boolean @default(true)
+
+  subscriptions Subscription[]
+
+  createdAt DateTime @default(now())
+}
+
+model Subscription {
+  id String @id @default(uuid())
+
+  userId String
+  user User @relation(fields: [userId], references: [id])
+
+  productId String
+  product Product @relation(fields: [productId], references: [id])
+
+  status SubscriptionStatus @default(PENDING)
+
+  startDate DateTime?
+
+  endDate DateTime?
+
+  createdAt DateTime @default(now())
+}
+
+model Transaction {
+  id String @id @default(uuid())
+
+  walletId String
+  wallet Wallet @relation(fields: [walletId], references: [id])
+
+  amount Float
+
+  type TransactionType
+
+  status TransactionStatus @default(PENDING)
+
+  reference String
+
+  createdAt DateTime @default(now())
 }

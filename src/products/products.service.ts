@@ -29,10 +29,11 @@ export class ProductsService {
   }
 
   async findOne(id: string) {
-    return this.prisma.product.findUnique({
-        where: {
+    const product = await this.prisma.product.findFirst({
+      where: {
         id,
-        },
+        active: true,
+      },
     });
 
     if (!product) {

@@ -32,7 +32,6 @@ export class ProductsService {
     const product = await this.prisma.product.findFirst({
       where: {
         id,
-        active: true,
       },
     });
 

@@ -7,6 +7,10 @@ import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { WalletModule } from './wallet/wallet.module';
+import { ProductsModule } from './products/products.module';
+import { SubscriptionsModule } from './subscriptions/subscriptions.module';
+import { TransactionsModule } from './transactions/transactions.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -17,6 +21,10 @@ import { WalletModule } from './wallet/wallet.module';
     AuthModule,
     UsersModule,
     WalletModule,
+    ProductsModule,
+    SubscriptionsModule,
+    TransactionsModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],
